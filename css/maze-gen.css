@@ -9,3 +9,8 @@
     margin: 0;
 }
 
+@media only screen and (max-width : 768px) {
+    #controls > div:nth-child(n+2) button{
+        margin-top: 10px;
+    }
+}
