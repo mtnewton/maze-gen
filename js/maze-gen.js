@@ -78,11 +78,11 @@ function updateSettings() {
 function initCanvas() {
     console.log('initCanvas()');
 
-    cDebug.width = settings.rows;
-    cDebug.height = settings.cols;
+    cDebug.width = settings.cols;
+    cDebug.height = settings.rows;
     ctxDebug = cDebug.getContext("2d");
 
-    cOutput.width = settings.rows;
-    cOutput.height = settings.cols;
+    cOutput.width = settings.cols;
+    cOutput.height = settings.rows;
     ctxOutput = cOutput.getContext("2d");
 }
