@@ -5,41 +5,84 @@ var ctxDebug;
 var ctxOutput;
 
 var options = {
-    width: $('#option-width'),
-    height: $('#option-height')
+    rows: $('#option-rows')[0],
+    rowsSlider: $('#option-rows-slider')[0],
+    cols: $('#option-cols')[0],
+    colsSlider: $('#option-cols-slider')[0]
 };
 
-var settings = {
-    width: 100,
-    height: 100
+var defaults = {
+    rows: 20,
+    cols: 20
 };
+
+var settings = $.extend({},defaults);
+
+function pageLoad() {
+    var groups = [
+        [options.rows, options.rowsSlider, settings.rows],
+        [options.cols, options.colsSlider, settings.cols]
+    ];
+    for (var g = 0; g < groups.length; g++) {
+        noUiSlider.create(groups[g][1], {
+            start: groups[g][2],
+            step: 1,
+            connect: "lower",
+            range: {
+                'min': 4,
+                '50%': 100,
+                '90%': 500,
+                'max': 1000
+            },
+            format: {
+                to: function ( value ) {
+                    return Math.round(value);
+                },
+                from: function ( value ) {
+                    return value;
+                }
+            }
+        });
+        groups[g][1].noUiSlider.on('update', (function (g) {
+            return function (values, handle) {
+                groups[g][0].value = values[handle];
+            }
+        })(g));
+        groups[g][0].addEventListener('change', (function (g) {
+            return function () {
+                groups[g][1].noUiSlider.set(this.value);
+            }
+        })(g));
+    }
+    initCanvas();
+}
 
 function generate() {
     console.log('generate()')
     validateOptions();
     updateSettings();
-    initCanvas()
+    initCanvas();
 }
 
-function validateOptions(){
+function validateOptions() {
     console.log('validateOptions()')
 }
 
-function updateSettings(){
+function updateSettings() {
     console.log('updateSettings()');
-    settings.width = parseInt(options.width.val());
-    settings.height = parseInt(options.height.val());
+    settings.rows = parseInt(options.rows.value);
+    settings.cols = parseInt(options.cols.value);
     console.log("Settings: " + JSON.stringify(settings));
 }
 
 function initCanvas() {
     console.log('initCanvas()');
 
-    cDebug.width = settings.width;
-    cDebug.height = settings.height;
+    cDebug.width = settings.rows;
+    cDebug.height = settings.cols;
     ctxDebug = cDebug.getContext("2d");
 
-    cOutput.width = settings.width;
-    cOutput.height = settings.height;
+    cOutput.width = settings.rows;
+    cOutput.height = settings.cols;
     ctxOutput = cOutput.getContext("2d");
 }
