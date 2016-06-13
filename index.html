@@ -41,26 +41,30 @@
 
     <div class="container-fluid">
 
-        <div id="options" class="panel collapse">
-            <div class="panel-heading">
-                <a href="javascript:void(0)" class="close" data-toggle="collapse" data-target="#options">x</a>
-                <h4>Options</h4>
-            </div>
-            <div class="panel-body">
-                <div class="row">
-                    <div class="col-sm-6">
-                        <div class="form-group">
-                            <label for="option-width" class="col-sm-2 control-label">Width:</label>
-                            <div class="col-sm-10">
-                                <input type="text" class="form-control " id="option-width" value="10">
-                            </div>
-                        </div>
+        <div  id="options" class="row collapse">
+            <div class="col-xs-12">
+                <div class="panel">
+                    <div class="panel-heading">
+                        <a href="javascript:void(0)" class="close" data-toggle="collapse" data-target="#options">x</a>
+                        <h4>Options</h4>
                     </div>
-                    <div class="col-sm-6">
-                        <div class="form-group">
-                            <label for="option-height" class="col-sm-2 control-label">Height:</label>
-                            <div class="col-sm-10">
-                                <input type="text" class="form-control " id="option-height" value="10">
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="option-width" class="col-sm-2 control-label">Width:</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" class="form-control " id="option-width" value="100">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="option-height" class="col-sm-2 control-label">Height:</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" class="form-control " id="option-height" value="100">
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -68,16 +72,24 @@
             </div>
         </div>
 
-        <div class="row">
+        <div id="controls" class="row">
             <div class="col-sm-4 col-md-2">
                 <button type="button" class="btn btn-primary btn-block btn-raised" data-toggle="collapse" data-target="#options">Options</button>
             </div>
             <div class="col-sm-4 col-md-2">
-                <button type="button" class="btn btn-primary btn-block btn-raised">Generate</button>
+                <button type="button" class="btn btn-primary btn-block btn-raised" onclick="generate()">Generate</button>
             </div>
             <div class="col-sm-4 col-md-2">
                 <button type="button" class="btn btn-primary btn-block btn-raised">Solve</button>
             </div>
+        </div>
+
+        <div class="row">
+            <canvas id="canvas-debug" width="100px" height="100px">Canvas not supported.</canvas>
+        </div>
+
+        <div class="row">
+            <canvas id="canvas-output" width="100px" height="100px">Canvas not supported.</canvas>
         </div>
 
     </div>
