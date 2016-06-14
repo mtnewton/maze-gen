@@ -110,8 +110,8 @@ function updateSettings() {
 function initCanvas() {
     console.log('initCanvas()');
 
-    cDebug.width = (settings.cols * 2) - 1;
-    cDebug.height = (settings.rows * 2) - 1;
+    cDebug.width = (settings.cols * 2) + 1;
+    cDebug.height = (settings.rows * 2) + 1;
     ctxDebug = cDebug.getContext("2d");
 
     cOutput.width = (settings.cols * 2) + 1;
@@ -125,7 +125,6 @@ function renderDebug() {
     var value;
     ctxDebug.fillRect(0, 0, ctxDebug.canvas.width, ctxDebug.canvas.height);
     ctxDebug.save();
-    ctxDebug.translate(-1, -1);
     ctxDebug.fillStyle = "#FFFFFF";
     for (var r = 0; r < settings.rows; r++) {
         for (var c = 0; c < settings.cols; c++) {
