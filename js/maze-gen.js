@@ -130,10 +130,6 @@ function renderDebug() {
         for (var c = 0; c < settings.cols; c++) {
             value = data[r][c];
             if (value & CELL.GENERATED) {
-                //top
-                if ((r > 0) && (data[r - 1][c] & CELL.BOTTOM)) {
-                    ctxDebug.fillRect(c * 2 + 1, r * 2, 1, 2)
-                }
                 //right
                 if ((c < settings.cols - 1) && (value & CELL.RIGHT)) {
                     ctxDebug.fillRect(c * 2 + 1, r * 2 + 1, 2, 1)
@@ -141,10 +137,6 @@ function renderDebug() {
                 //bottom
                 if ((r < settings.rows - 1) && (value & CELL.BOTTOM)) {
                     ctxDebug.fillRect(c * 2 + 1, r * 2 + 1, 1, 2)
-                }
-                //left
-                if ((c > 0) && (data[r][c - 1] & CELL.RIGHT)) {
-                    ctxDebug.fillRect(c * 2, r * 2 + 1, 2, 1)
                 }
             }
         }
