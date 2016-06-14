@@ -1,8 +1,6 @@
 $.material.init();
-var cDebug = $('#canvas-debug')[0];
-var cOutput = $('#canvas-output')[0];
-var ctxDebug;
-var ctxOutput;
+var canvas = $('#canvas-output')[0];
+var ctx;
 var settings;
 var data;
 var CELL = {
@@ -19,11 +17,21 @@ var options = {
     cols: $('#option-cols')[0],
     colsSlider: $('#option-cols-slider')[0],
     minCols: 3,
-    maxCols: 1000
+    maxCols: 1000,
+    border: $('#option-border')[0],
+    borderSlider: $('#option-border-slider')[0],
+    minBorder: 1,
+    maxBorder: 50,
+    lane: $('#option-lane')[0],
+    laneSlider: $('#option-lane-slider')[0],
+    minLane: 1,
+    maxLane: 50
 };
 var defaults = {
-    rows: 20,
-    cols: 20
+    rows: 40,
+    cols: 40,
+    border: 1,
+    lane: 10
 };
 
 function pageLoad() {
@@ -46,7 +54,9 @@ function initSliders() {
     console.log('initSliders()');
     var sliders = [
         [options.rows, options.rowsSlider, settings.rows, options.minRows, options.maxRows],
-        [options.cols, options.colsSlider, settings.cols, options.minCols, options.maxCols]
+        [options.cols, options.colsSlider, settings.cols, options.minCols, options.maxCols],
+        [options.border, options.borderSlider, settings.border, options.minBorder, options.maxBorder],
+        [options.lane, options.laneSlider, settings.lane, options.minLane, options.maxLane]
     ];
     for (var g = 0; g < sliders.length; g++) {
         noUiSlider.create(sliders[g][1], {
@@ -54,8 +64,8 @@ function initSliders() {
             step: 1,
             connect: "lower",
             range: {
-                'min': 3,
-                '50%': Math.round(sliders[g][4] / 10),
+                'min': sliders[g][3],
+                '50%': Math.round(sliders[g][4] / 5),
                 '90%': Math.round(sliders[g][4] / 2),
                 'max': sliders[g][4]
             },
@@ -91,7 +101,7 @@ function initData() {
     //fill with random data for now
     for (var r = 0; r < settings.rows; r++) {
         for (var c = 0; c < settings.cols; c++) {
-            data[r][c] = ( Math.floor(Math.random() * 4) << 1 ) + 1;
+            data[r][c] = ( Math.floor(Math.random() * 3 ) << 1 ) + 1;
         }
     }
 }
@@ -104,44 +114,51 @@ function updateSettings() {
     console.log('updateSettings()');
     settings.rows = parseInt(options.rows.value);
     settings.cols = parseInt(options.cols.value);
+    settings.border = parseInt(options.border.value);
+    settings.lane = parseInt(options.lane.value);
     console.log("Settings: " + JSON.stringify(settings));
 }
 
 function initCanvas() {
     console.log('initCanvas()');
-
-    cDebug.width = (settings.cols * 2) + 1;
-    cDebug.height = (settings.rows * 2) + 1;
-    ctxDebug = cDebug.getContext("2d");
-
-    cOutput.width = (settings.cols * 2) + 1;
-    cOutput.height = (settings.rows * 2) + 1;
-    ctxOutput = cOutput.getContext("2d");
+    canvas.width = (settings.cols * (settings.lane + settings.border)) + settings.border;
+    canvas.height = (settings.rows * (settings.lane + settings.border)) + settings.border;
+    ctx = canvas.getContext("2d");
 }
 
 function renderDebug() {
     console.log('renderDebug()');
     var t1 = performance.now();
     var value;
-    ctxDebug.fillRect(0, 0, ctxDebug.canvas.width, ctxDebug.canvas.height);
-    ctxDebug.save();
-    ctxDebug.fillStyle = "#FFFFFF";
+    ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+    ctx.save();
+    ctx.fillStyle = "#FFFFFF";
     for (var r = 0; r < settings.rows; r++) {
         for (var c = 0; c < settings.cols; c++) {
             value = data[r][c];
             if (value & CELL.GENERATED) {
                 //right
                 if ((c < settings.cols - 1) && (value & CELL.RIGHT)) {
-                    ctxDebug.fillRect(c * 2 + 1, r * 2 + 1, 2, 1)
+                    ctx.fillRect(
+                        c * (settings.border + settings.lane) + settings.border,
+                        r * (settings.border + settings.lane) + settings.border,
+                        (settings.border + settings.lane),
+                        settings.lane
+                    );
                 }
                 //bottom
                 if ((r < settings.rows - 1) && (value & CELL.BOTTOM)) {
-                    ctxDebug.fillRect(c * 2 + 1, r * 2 + 1, 1, 2)
+                    ctx.fillRect(
+                        c * (settings.border + settings.lane) + settings.border,
+                        r * (settings.border + settings.lane) + settings.border,
+                        settings.lane,
+                        (settings.border + settings.lane)
+                    );
                 }
             }
         }
     }
-    ctxDebug.restore();
+    ctx.restore();
     var t2 = performance.now()
     console.log('renderDebug() Took: ' + (t2 - t1).toFixed(4) + " milliseconds.");
 }
