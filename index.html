@@ -12,8 +12,10 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 
     <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-material-design/0.5.10/css/bootstrap-material-design.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-material-design/0.5.10/css/ripples.min.css">
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-material-design/0.5.10/css/bootstrap-material-design.min.css">
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-material-design/0.5.10/css/ripples.min.css">
 
     <link rel="stylesheet" href="css/maze-gen.css">
 
@@ -22,55 +24,64 @@
 </head>
 <body onload="pageLoad()">
 
-    <div class="navbar navbar-default" id="nav">
-        <div class="container-fluid">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-responsive-collapse">
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <a class="navbar-brand" href="index.html">maze-gen</a>
-            </div>
-            <div class="navbar-collapse collapse navbar-responsive-collapse">
-                <ul class="nav navbar-nav navbar-right">
-                    <li><a href="http://github.com/mtnewton/maze-gen" target="_blank">Github</a></li>
-                </ul>
-            </div>
+<div class="navbar navbar-default" id="nav">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse"
+                    data-target=".navbar-responsive-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="index.html">maze-gen</a>
+        </div>
+        <div class="navbar-collapse collapse navbar-responsive-collapse">
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="http://github.com/mtnewton/maze-gen" target="_blank">Github</a></li>
+            </ul>
         </div>
     </div>
+</div>
 
-    <div class="container-fluid">
+<div class="container-fluid">
 
-        <div  id="options" class="row collapse">
-            <div class="col-xs-12">
-                <div class="panel">
-                    <div class="panel-heading">
-                        <a href="javascript:void(0)" class="close" data-toggle="collapse" data-target="#options">x</a>
-                        <h4>Options</h4>
-                    </div>
-                    <div class="panel-body">
-                        <div class="row">
-                            <div class="col-sm-6">
-                                <div class="form-group">
-                                    <label for="option-rows" class="col-sm-2 col-md-1 control-label">Rows:</label>
-                                    <div class="col-sm-3 col-md-2">
-                                        <input type="text" class="form-control text-center" id="option-rows" />
-                                    </div>
-                                    <div class="col-sm-7 col-md-9">
-                                        <div class="slider shor mt-lg" id="option-rows-slider"></div>
-                                    </div>
+    <div class="alert alert-dismissible alert-warning">
+        <button type="button" class="close" data-dismiss="alert">×</button>
+        <strong>Heads up!</strong>
+        This project is still in development.
+        Pressing <strong>generate</strong> will only output some random data,
+        and pressing <strong>solve</strong> will do nothing.
+    </div>
+
+    <div id="options" class="row collapse">
+        <div class="col-xs-12">
+            <div class="panel">
+                <div class="panel-heading">
+                    <a href="javascript:void(0)" class="close" data-toggle="collapse" data-target="#options">x</a>
+                    <h4>Options</h4>
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label for="option-rows" class="col-sm-2 col-md-1 control-label">Rows:</label>
+                                <div class="col-sm-3 col-md-2">
+                                    <input type="text" class="form-control text-center" id="option-rows"/>
+                                </div>
+                                <div class="col-sm-7 col-md-9">
+                                    <div class="slider shor mt-lg" id="option-rows-slider"></div>
                                 </div>
                             </div>
-                            <div class="col-sm-6">
-                                <div class="form-group">
-                                    <label for="option-cols" class="col-sm-2 col-md-2 col-lg-1 control-label">Columns:</label>
-                                    <div class="col-sm-3 col-md-2">
-                                        <input type="text" class="form-control text-center" id="option-cols" />
-                                    </div>
-                                    <div class="col-sm-7 col-md-8 col-lg-9">
-                                        <div class="slider shor mt-lg" id="option-cols-slider"></div>
-                                    </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label for="option-cols"
+                                       class="col-sm-2 col-md-2 col-lg-1 control-label">Columns:</label>
+                                <div class="col-sm-3 col-md-2">
+                                    <input type="text" class="form-control text-center" id="option-cols"/>
+                                </div>
+                                <div class="col-sm-7 col-md-8 col-lg-9">
+                                    <div class="slider shor mt-lg" id="option-cols-slider"></div>
                                 </div>
                             </div>
                         </div>
@@ -78,35 +89,40 @@
                 </div>
             </div>
         </div>
-
-        <div id="controls" class="row">
-            <div class="col-sm-4 col-md-2">
-                <button type="button" class="btn btn-primary btn-block btn-raised" data-toggle="collapse" data-target="#options">Options</button>
-            </div>
-            <div class="col-sm-4 col-md-2">
-                <button type="button" class="btn btn-primary btn-block btn-raised" onclick="generate()">Generate</button>
-            </div>
-            <div class="col-sm-4 col-md-2">
-                <button type="button" class="btn btn-primary btn-block btn-raised">Solve</button>
-            </div>
-        </div>
-
-        <div class="row">
-            <canvas id="canvas-debug">Canvas not supported.</canvas>
-        </div>
-
-        <div class="row">
-            <canvas id="canvas-output">Canvas not supported.</canvas>
-        </div>
-
     </div>
 
-    <script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-material-design/0.5.10/js/material.min.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-material-design/0.5.10/js/ripples.min.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/8.5.1/nouislider.min.js"></script>
+    <div id="controls" class="row">
+        <div class="col-sm-4 col-md-2">
+            <button type="button" class="btn btn-primary btn-block btn-raised" data-toggle="collapse"
+                    data-target="#options">Options
+            </button>
+        </div>
+        <div class="col-sm-4 col-md-2">
+            <button type="button" class="btn btn-primary btn-block btn-raised" onclick="generate()">Generate</button>
+        </div>
+        <div class="col-sm-4 col-md-2">
+            <button type="button" class="btn btn-primary btn-block btn-raised">Solve</button>
+        </div>
+    </div>
 
-    <script type="text/javascript" src="js/maze-gen.js"></script>
+    <div class="row">
+        <canvas id="canvas-debug" width="60px" height="60px">Canvas not supported.</canvas>
+    </div>
+
+    <div class="row">
+        <canvas id="canvas-output" width="60px" height="60px">Canvas not supported.</canvas>
+    </div>
+
+</div>
+
+<script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+<script type="text/javascript"
+        src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-material-design/0.5.10/js/material.min.js"></script>
+<script type="text/javascript"
+        src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-material-design/0.5.10/js/ripples.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/8.5.1/nouislider.min.js"></script>
+
+<script type="text/javascript" src="js/maze-gen.js"></script>
 
 </body>
 </html>

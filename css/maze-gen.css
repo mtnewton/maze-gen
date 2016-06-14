@@ -1,6 +1,6 @@
 #canvas-debug,
-#canvas-output{
-    box-shadow: 0 1px 6px 0 rgba(0,0,0,.12);
+#canvas-output {
+    box-shadow: 0 1px 6px 0 rgba(0, 0, 0, .12);
     background-color: white;
     margin: 20px 0 0 15px;
 }
@@ -9,10 +9,12 @@
     margin: 0;
 }
 
-@media only screen and (max-width : 768px) {
-    #controls > div:nth-child(n+2) button{
+@media only screen and (max-width: 768px) {
+    #controls > div:nth-child(n+2) button {
         margin-top: 10px;
     }
 }
 
-.mt-lg { margin-top: 24px; }
+.mt-lg {
+    margin-top: 24px;
+}
