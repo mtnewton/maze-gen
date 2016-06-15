@@ -142,6 +142,7 @@ function calculate(cells) {
     var t1 = performance.now();
     var rows = cells.length;
     var cols = cells[0].length;
+    var lastVisited = {row: 0, col:0};
     var DIRECTION = {
         UP:1,
         RIGHT:2,
@@ -150,12 +151,16 @@ function calculate(cells) {
     };
 
     function getNewCell(){
-        for (var r = 0; r < rows; r++) {
-            for (var c = 0; c < cols; c++) {
+        for (var r = lastVisited.row; r < rows; r++) {
+            lastVisited.row = r;
+            for (var c = lastVisited.col; c < cols; c++) {
+                lastVisited.col = c;
                 if (~cells[r][c] & CELL.GENERATED){
                     return [r,c,cells[r][c]];
                 }
             }
+
+            lastVisited.col = 0;
         }
         return null;
     }
