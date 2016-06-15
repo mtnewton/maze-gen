@@ -10,28 +10,34 @@ var CELL = {
     SOLUTION: 8
 };
 var options = {
-    rows: $('#option-rows')[0],
+    rowsValue: $('#option-rows')[0],
     rowsSlider: $('#option-rows-slider')[0],
     minRows: 3,
     maxRows: 1000,
-    cols: $('#option-cols')[0],
+    colsValue: $('#option-cols')[0],
     colsSlider: $('#option-cols-slider')[0],
     minCols: 3,
     maxCols: 1000,
-    border: $('#option-border')[0],
+    borderValue: $('#option-border')[0],
     borderSlider: $('#option-border-slider')[0],
     minBorder: 1,
     maxBorder: 50,
-    lane: $('#option-lane')[0],
+    laneValue: $('#option-lane')[0],
     laneSlider: $('#option-lane-slider')[0],
     minLane: 1,
-    maxLane: 50
+    maxLane: 50,
+    lengthValue:  $('#option-length')[0],
+    lengthSlider: $('#option-length-slider')[0],
+    minLength: 0,
+    maxLength: 60
+
 };
 var defaults = {
     rows: 40,
     cols: 40,
     border: 1,
-    lane: 10
+    lane: 10,
+    length:0
 };
 
 function pageLoad() {
@@ -53,10 +59,12 @@ function generate() {
 function initSliders() {
     console.log('initSliders()');
     var sliders = [
-        [options.rows, options.rowsSlider, settings.rows, options.minRows, options.maxRows],
-        [options.cols, options.colsSlider, settings.cols, options.minCols, options.maxCols],
-        [options.border, options.borderSlider, settings.border, options.minBorder, options.maxBorder],
-        [options.lane, options.laneSlider, settings.lane, options.minLane, options.maxLane]
+        //Text Input Element  //Slider Element      //Starting Value //Min Value        //Max Value
+        [options.rowsValue,   options.rowsSlider,   settings.rows,   options.minRows,   options.maxRows],
+        [options.colsValue,   options.colsSlider,   settings.cols,   options.minCols,   options.maxCols],
+        [options.borderValue, options.borderSlider, settings.border, options.minBorder, options.maxBorder],
+        [options.laneValue,   options.laneSlider,   settings.lane,   options.minLane,   options.maxLane],
+        [options.lengthValue, options.lengthSlider, settings.length, options.minLength, options.maxLength]
     ];
     for (var g = 0; g < sliders.length; g++) {
         noUiSlider.create(sliders[g][1], {
@@ -78,11 +86,13 @@ function initSliders() {
                 }
             }
         });
+        //Set the text input to the slider value on update.
         sliders[g][1].noUiSlider.on('update', (function (g) {
             return function (values, handle) {
                 sliders[g][0].value = values[handle];
             }
         })(g));
+        //Set the slider value to text input when input is changed,
         sliders[g][0].addEventListener('change', (function (g) {
             return function () {
                 sliders[g][1].noUiSlider.set(this.value);
@@ -112,10 +122,10 @@ function validateOptions() {
 
 function updateSettings() {
     console.log('updateSettings()');
-    settings.rows = parseInt(options.rows.value);
-    settings.cols = parseInt(options.cols.value);
-    settings.border = parseInt(options.border.value);
-    settings.lane = parseInt(options.lane.value);
+    settings.rows = parseInt(options.rowsValue.value);
+    settings.cols = parseInt(options.colsValue.value);
+    settings.border = parseInt(options.borderValue.value);
+    settings.lane = parseInt(options.laneValue.value);
     console.log("Settings: " + JSON.stringify(settings));
 }
 
