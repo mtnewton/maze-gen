@@ -53,7 +53,8 @@ function generate() {
     updateSettings();
     initData();
     initCanvas();
-    renderDebug();
+    data = calculate(data);
+    render();
 }
 
 function initSliders() {
@@ -109,11 +110,11 @@ function initData() {
     }
 
     //fill with random data for now
-    for (var r = 0; r < settings.rows; r++) {
-        for (var c = 0; c < settings.cols; c++) {
-            data[r][c] = ( Math.floor(Math.random() * 3 ) << 1 ) + 1;
-        }
-    }
+    //for (var r = 0; r < settings.rows; r++) {
+    //   for (var c = 0; c < settings.cols; c++) {
+    //        data[r][c] = ( Math.floor(Math.random() * 3 ) << 1 ) + 1;
+    //    }
+    //}
 }
 
 function validateOptions() {
@@ -136,8 +137,111 @@ function initCanvas() {
     ctx = canvas.getContext("2d");
 }
 
-function renderDebug() {
-    console.log('renderDebug()');
+function calculate(cells) {
+    console.log('calculate()');
+    var t1 = performance.now();
+    var rows = cells.length;
+    var cols = cells[0].length;
+    var DIRECTION = {
+        UP:1,
+        RIGHT:2,
+        DOWN:4,
+        LEFT:8
+    };
+
+    function getNewCell(){
+        for (var r = 0; r < rows; r++) {
+            for (var c = 0; c < cols; c++) {
+                if (~cells[r][c] & CELL.GENERATED){
+                    return [r,c,cells[r][c]];
+                }
+            }
+        }
+        return null;
+    }
+
+    function randomAdjacentCell(r, c, onlyReturnAGeneratedCell) {
+        var options = [DIRECTION.UP,DIRECTION.RIGHT,DIRECTION.DOWN,DIRECTION.LEFT];
+        var choice, direction;
+        var next = null;
+
+        while (!next){
+            choice = Math.floor(Math.random() * options.length);
+            direction = options[choice];
+            options.splice(choice, 1);
+            if((direction & DIRECTION.LEFT) && isInMaze(r,c-1)){
+                if(onlyReturnAGeneratedCell && (~cells[r][c-1] & CELL.GENERATED)){
+                    continue;
+                }
+                next = [r,c-1,cells[r][c-1], DIRECTION.LEFT];
+            } else if((direction & DIRECTION.RIGHT) && isInMaze(r,c+1)){
+                if(onlyReturnAGeneratedCell && (~cells[r][c+1] & CELL.GENERATED)){
+                    continue;
+                }
+                next = [r,c+1,cells[r][c+1], DIRECTION.RIGHT];
+            } else if((direction & DIRECTION.UP) && isInMaze(r-1,c)){
+                if(onlyReturnAGeneratedCell && (~cells[r-1][c] & CELL.GENERATED)){
+                    continue;
+                }
+                next = [r-1,c,cells[r-1][c], DIRECTION.UP];
+            } else if((direction & DIRECTION.DOWN) && isInMaze(r+1,c)){
+                if(onlyReturnAGeneratedCell && (~cells[r+1][c] & CELL.GENERATED)){
+                    continue;
+                }
+                next = [r+1,c,cells[r+1][c], DIRECTION.DOWN];
+            }
+        }
+        return next;
+    }
+
+    function isInMaze(r,c){
+        return (r>=0 && r<rows && c>=0 && c<cols);
+    }
+
+    function connect(r, c, direction){
+        if(direction & DIRECTION.DOWN){
+            cells[r][c] |= CELL.BOTTOM;
+        }
+        if(direction & DIRECTION.RIGHT){
+            cells[r][c] |= CELL.RIGHT;
+        }
+        if(direction & DIRECTION.UP){
+            cells[r-1][c] |= CELL.BOTTOM;
+        }
+        if(direction & DIRECTION.LEFT){
+            cells[r][c-1] |= CELL.RIGHT;
+        }
+    }
+    
+    function visit(r,c){
+        cells[r][c] |= CELL.GENERATED;
+    }
+    
+    var cell, adjCell, prevCell;
+    while (cell = getNewCell()){
+        visit(cell[0],cell[1]);
+        if(cell[0] || cell[1]){ //if not the first cell
+             prevCell = randomAdjacentCell(cell[0], cell[1], true);
+            connect(cell[0],cell[1],prevCell[3])
+        }
+        while(adjCell = randomAdjacentCell(cell[0], cell[1])){
+            if(~adjCell[2] & CELL.GENERATED){
+                visit(adjCell[0],adjCell[1]);
+                connect(cell[0],cell[1],adjCell[3])
+                cell = adjCell;
+            }else{
+                break;
+            }
+        }
+    }
+    var t2 = performance.now()
+    console.log('render() Took: ' + (t2 - t1).toFixed(4) + " milliseconds.");
+    return cells;
+}
+
+
+function render() {
+    console.log('render()');
     var t1 = performance.now();
     var value;
     ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
@@ -148,7 +252,7 @@ function renderDebug() {
             value = data[r][c];
             if (value & CELL.GENERATED) {
                 //right
-                if ((c < settings.cols - 1) && (value & CELL.RIGHT)) {
+                if ((c < settings.cols) && (value & CELL.RIGHT)) {
                     ctx.fillRect(
                         c * (settings.border + settings.lane) + settings.border,
                         r * (settings.border + settings.lane) + settings.border,
@@ -157,7 +261,7 @@ function renderDebug() {
                     );
                 }
                 //bottom
-                if ((r < settings.rows - 1) && (value & CELL.BOTTOM)) {
+                if ((r < settings.rows) && (value & CELL.BOTTOM)) {
                     ctx.fillRect(
                         c * (settings.border + settings.lane) + settings.border,
                         r * (settings.border + settings.lane) + settings.border,
@@ -165,10 +269,20 @@ function renderDebug() {
                         (settings.border + settings.lane)
                     );
                 }
+
+                //if generated and
+                if ((~value & CELL.RIGHT) && (~value & CELL.BOTTOM) && (value & CELL.GENERATED) ) {
+                    ctx.fillRect(
+                        c * (settings.border + settings.lane) + settings.border,
+                        r * (settings.border + settings.lane) + settings.border,
+                        settings.lane,
+                        settings.lane
+                    );
+                }
             }
         }
     }
     ctx.restore();
     var t2 = performance.now()
-    console.log('renderDebug() Took: ' + (t2 - t1).toFixed(4) + " milliseconds.");
+    console.log('render() Took: ' + (t2 - t1).toFixed(4) + " milliseconds.");
 }
