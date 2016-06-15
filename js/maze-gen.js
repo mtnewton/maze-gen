@@ -235,7 +235,7 @@ function calculate(cells) {
         }
     }
     var t2 = performance.now()
-    console.log('render() Took: ' + (t2 - t1).toFixed(4) + " milliseconds.");
+    console.log('calculate() Took: ' + (t2 - t1).toFixed(4) + " milliseconds.");
     return cells;
 }
 

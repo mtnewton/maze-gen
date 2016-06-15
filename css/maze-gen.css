@@ -14,21 +14,14 @@
     }
 }
 
-#playback .btn-group {
-    white-space: nowrap;
-
-}
-#playback .btn-group .btn {
-     float: none;
-     display: inline-block;
- }
-
 .mt-lg {
     margin-top: 24px;
 }
+
 .mb-lg {
     margin-bottom: 20px;
 }
+
 .m-n {
     margin: 0;
 }
