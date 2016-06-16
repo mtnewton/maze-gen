@@ -22,7 +22,7 @@
     <script src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
 
 </head>
-<body onload="pageLoad()">
+<body>
 
 <div class="navbar navbar-default" id="nav">
     <div class="container-fluid">
@@ -123,6 +123,16 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="col-sm-6">
+                            <div class="form-group m-n">
+                                <label for="option-generator" class="col-sm-2 col-md-1 control-label">Generator:</label>
+                                <div class="col-sm-10 col-md-11">
+                                    <select disabled id="option-generator" class="form-control">
+                                        <option>No registered generators.</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -136,7 +146,7 @@
             </button>
         </div>
         <div class="col-sm-4 col-md-2">
-            <button type="button" class="btn btn-primary btn-block btn-raised" onclick="generate()">Generate</button>
+            <button type="button" class="btn btn-primary btn-block btn-raised" onclick="mazeGen.generate()">Generate</button>
         </div>
         <div class="col-sm-4 col-md-2">
             <button type="button" class="btn btn-primary btn-block btn-raised">Solve</button>
@@ -160,6 +170,7 @@
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/8.5.1/nouislider.min.js"></script>
 
 <script type="text/javascript" src="js/maze-gen.js"></script>
+<script type="text/javascript" src="js/gen_simple.js"></script>
 
 <script>
     (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
