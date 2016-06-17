@@ -6,7 +6,7 @@ var mazeGen = (function(){
     var canvas = $('#canvas-output')[0];;
     var ctx;
     var settings;
-    var data;
+    var data, drawQueue, drawStep, timeout;
     var CELL = {
         GENERATED: 1,
         RIGHT: 2,
@@ -48,7 +48,9 @@ var mazeGen = (function(){
         cols: 40,
         border: 1,
         lane: 10,
-        length:0
+        length: 0,
+        borderColor: "#000000",
+        laneColor: "#FFFFFF"
     };
     var generators = [];
 
@@ -77,19 +79,34 @@ var mazeGen = (function(){
 
     function generate() {
         console.log('generate()');
+        window.clearTimeout(timeout);
         validateOptions();
         updateSettings();
         initData();
         initCanvas();
-        data = callGenerator(data);
-        render();
+        var results = callGenerator(data);
+        data = results[0];
+        drawQueue = results[1];
+
+        ctx.fillStyle = settings.borderColor;
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = settings.laneColor;
+
+        var t1 = performance.now();
+        if(settings.length > 0){
+            playback()
+        }else{
+            render();
+        }
+        var t2 = performance.now();
+        console.log('playback() Took: ' + (t2 - t1).toFixed(4) + " milliseconds.");
     }
 
     function callGenerator(cells){
         console.log('callGenerator()');
         var selectedIndex = options.generatorSelect.selectedIndex;
         var generatorFunction = generators[selectedIndex][1];
-        return generatorFunction(cells);
+        return generatorFunction(cells, drawQueue);
     }
 
     function initSliders() {
@@ -143,6 +160,8 @@ var mazeGen = (function(){
         for (var r = 0; r < settings.rows; r++) {
             data[r] = new Uint8Array(settings.cols);
         }
+        drawQueue = [];
+        drawStep = 0;
     }
 
     function validateOptions() {
@@ -155,6 +174,7 @@ var mazeGen = (function(){
         settings.cols = parseInt(options.colsValue.value);
         settings.border = parseInt(options.borderValue.value);
         settings.lane = parseInt(options.laneValue.value);
+        settings.length = parseInt(options.lengthValue.value);
         console.log("Settings: " + JSON.stringify(settings));
     }
 
@@ -165,51 +185,39 @@ var mazeGen = (function(){
         ctx = canvas.getContext("2d");
     }
 
-    function render() {
-        console.log('render()');
-        var t1 = performance.now();
-        var value;
-        ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-        ctx.save();
-        ctx.fillStyle = "#FFFFFF";
-        for (var r = 0; r < settings.rows; r++) {
-            for (var c = 0; c < settings.cols; c++) {
-                value = data[r][c];
-                if (value & CELL.GENERATED) {
-                    //right
-                    if ((c < settings.cols) && (value & CELL.RIGHT)) {
-                        ctx.fillRect(
-                            c * (settings.border + settings.lane) + settings.border,
-                            r * (settings.border + settings.lane) + settings.border,
-                            (settings.border + settings.lane),
-                            settings.lane
-                        );
-                    }
-                    //bottom
-                    if ((r < settings.rows) && (value & CELL.BOTTOM)) {
-                        ctx.fillRect(
-                            c * (settings.border + settings.lane) + settings.border,
-                            r * (settings.border + settings.lane) + settings.border,
-                            settings.lane,
-                            (settings.border + settings.lane)
-                        );
-                    }
-
-                    //if generated and
-                    if ((~value & CELL.RIGHT) && (~value & CELL.BOTTOM) && (value & CELL.GENERATED) ) {
-                        ctx.fillRect(
-                            c * (settings.border + settings.lane) + settings.border,
-                            r * (settings.border + settings.lane) + settings.border,
-                            settings.lane,
-                            settings.lane
-                        );
-                    }
-                }
-            }
+    function render(){
+        for(var step=0; step<drawQueue.length; step++){
+            draw();
         }
-        ctx.restore();
-        var t2 = performance.now();
-        console.log('render() Took: ' + (t2 - t1).toFixed(4) + " milliseconds.");
+    }
+
+    function playback() {
+        draw();
+        if(drawStep < drawQueue.length) {
+            timeout = window.setTimeout(playback, 10);
+        }
+    }
+
+    function draw() {
+        var step = drawQueue[drawStep++];
+        switch(step[2]){
+            case CELL.BOTTOM:
+                ctx.fillRect(
+                    step[1] * (settings.border + settings.lane) + settings.border,
+                    step[0] * (settings.border + settings.lane) + settings.border,
+                    settings.lane,
+                    settings.lane * 2 + settings.border
+            );
+                break;
+            case CELL.RIGHT:
+                ctx.fillRect(
+                    step[1] * (settings.border + settings.lane) + settings.border,
+                    step[0] * (settings.border + settings.lane) + settings.border,
+                    settings.lane * 2 + settings.border,
+                    settings.lane
+                );
+                break;
+        }
     }
 
     init();

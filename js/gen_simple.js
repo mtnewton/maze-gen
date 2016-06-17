@@ -1,14 +1,15 @@
 (function(mazeGen){
 
     var name = "Simple";
-    var cells, rows, cols, lastVisited;
+    var cells, drawQueue,  rows, cols, lastVisited;
     var DIRECTION = mazeGen.DIRECTION;
     var CELL = mazeGen.CELL;
 
-    function generate(data) {
+    function generate(data, drawData) {
         console.log('generate()');
         var t1 = performance.now();
         cells = data;
+        drawQueue = drawData;
         rows = cells.length;
         cols = cells[0].length;
         lastVisited = {row: 0, col:0};
@@ -32,7 +33,7 @@
         }
         var t2 = performance.now();
         console.log('calculate() Took: ' + (t2 - t1).toFixed(4) + " milliseconds.");
-        return cells;
+        return [ cells, drawQueue ]
     }
 
     function getNewCell(){
@@ -91,15 +92,22 @@
     function connect(r, c, direction){
         if(direction & DIRECTION.DOWN){
             cells[r][c] |= CELL.BOTTOM;
+            drawQueue.push([r, c, CELL.BOTTOM]);
         }
         if(direction & DIRECTION.RIGHT){
             cells[r][c] |= CELL.RIGHT;
+            drawQueue.push([r, c, CELL.RIGHT]);
+
         }
         if(direction & DIRECTION.UP){
             cells[r-1][c] |= CELL.BOTTOM;
+            drawQueue.push([r-1, c, CELL.BOTTOM]);
+
         }
         if(direction & DIRECTION.LEFT){
             cells[r][c-1] |= CELL.RIGHT;
+            drawQueue.push([r, c-1, CELL.RIGHT]);
+
         }
     }
 
