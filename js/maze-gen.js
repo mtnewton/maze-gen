@@ -82,31 +82,26 @@ var mazeGen = (function(){
         window.clearTimeout(timeout);
         validateOptions();
         updateSettings();
-        initData();
         initCanvas();
-        var results = callGenerator(data);
-        data = results[0];
-        drawQueue = results[1];
-
+        drawQueue = callGenerator();
+        drawStep = 0;
         ctx.fillStyle = settings.borderColor;
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         ctx.fillStyle = settings.laneColor;
 
-        var t1 = performance.now();
         if(settings.length > 0){
             playback()
         }else{
             render();
         }
-        var t2 = performance.now();
-        console.log('playback() Took: ' + (t2 - t1).toFixed(4) + " milliseconds.");
+        
     }
 
-    function callGenerator(cells){
+    function callGenerator(){
         console.log('callGenerator()');
         var selectedIndex = options.generatorSelect.selectedIndex;
         var generatorFunction = generators[selectedIndex][1];
-        return generatorFunction(cells, drawQueue);
+        return generatorFunction(settings.rows, settings.cols);
     }
 
     function initSliders() {
@@ -154,16 +149,6 @@ var mazeGen = (function(){
         }
     }
 
-    function initData() {
-        console.log('initData()');
-        data = new Array(settings.rows);
-        for (var r = 0; r < settings.rows; r++) {
-            data[r] = new Uint8Array(settings.cols);
-        }
-        drawQueue = [];
-        drawStep = 0;
-    }
-
     function validateOptions() {
         console.log('validateOptions()')
     }
@@ -186,9 +171,13 @@ var mazeGen = (function(){
     }
 
     function render(){
+        console.log("render()");
+        var t1 = performance.now();
         for(var step=0; step<drawQueue.length; step++){
             draw();
         }
+        var t2 = performance.now();
+        console.log('render() Took: ' + (t2 - t1).toFixed(4) + " milliseconds.");
     }
 
     function playback() {
