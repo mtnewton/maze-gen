@@ -30,7 +30,7 @@
             }
         }
         var t2 = performance.now();
-        console.log('calculate() Took: ' + (t2 - t1).toFixed(4) + " milliseconds.");
+        console.log('generate() Took: ' + (t2 - t1).toFixed(4) + " milliseconds.");
         return drawQueue;
     }
 
@@ -57,34 +57,21 @@
     }
 
     function randomAdjacentCell(r, c, onlyReturnAGeneratedCell) {
-        var options = [DIRECTION.UP,DIRECTION.RIGHT,DIRECTION.DOWN,DIRECTION.LEFT];
-        var choice, direction;
+        var directions = [DIRECTION.UP,DIRECTION.RIGHT,DIRECTION.DOWN,DIRECTION.LEFT];
+        var offsets = [{row:-1,col:0}, {row:0,col:1}, {row:1,col:0}, {row:0,col:-1}];
+        var choice, direction, offset, generated;
         var next = null;
-
-        while (!next){
-            choice = Math.floor(Math.random() * options.length);
-            direction = options[choice];
-            options.splice(choice, 1);
-            if((direction & DIRECTION.LEFT) && isInMaze(r,c-1)){
-                if(onlyReturnAGeneratedCell && (~cells[r][c-1] & CELL.GENERATED)){
-                    continue;
+        while (!next && directions.length>0){
+            choice = Math.floor(Math.random() * directions.length);
+            direction = directions.splice(choice, 1)[0];
+            offset = offsets.splice(choice, 1)[0];
+            if(isInMaze(r+offset.row,c+offset.col)) {
+                generated = cells[r+offset.row][c+offset.col] & CELL.GENERATED;
+                if( onlyReturnAGeneratedCell && generated){
+                    next = [r + offset.row, c + offset.col, cells[r+offset.row][c+offset.col],direction];
+                }else if (!onlyReturnAGeneratedCell && !generated) {
+                    next = [r + offset.row, c + offset.col, cells[r+offset.row][c+offset.col],direction];
                 }
-                next = [r,c-1,cells[r][c-1], DIRECTION.LEFT];
-            } else if((direction & DIRECTION.RIGHT) && isInMaze(r,c+1)){
-                if(onlyReturnAGeneratedCell && (~cells[r][c+1] & CELL.GENERATED)){
-                    continue;
-                }
-                next = [r,c+1,cells[r][c+1], DIRECTION.RIGHT];
-            } else if((direction & DIRECTION.UP) && isInMaze(r-1,c)){
-                if(onlyReturnAGeneratedCell && (~cells[r-1][c] & CELL.GENERATED)){
-                    continue;
-                }
-                next = [r-1,c,cells[r-1][c], DIRECTION.UP];
-            } else if((direction & DIRECTION.DOWN) && isInMaze(r+1,c)){
-                if(onlyReturnAGeneratedCell && (~cells[r+1][c] & CELL.GENERATED)){
-                    continue;
-                }
-                next = [r+1,c,cells[r+1][c], DIRECTION.DOWN];
             }
         }
         return next;

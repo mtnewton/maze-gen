@@ -190,13 +190,21 @@ var mazeGen = (function(){
     function draw() {
         var step = drawQueue[drawStep++];
         switch(step[2]){
+            case CELL.GENERATED:
+                ctx.fillRect(
+                    step[1] * (settings.border + settings.lane) + settings.border,
+                    step[0] * (settings.border + settings.lane) + settings.border,
+                    settings.lane,
+                    settings.lane
+                );
+                break;
             case CELL.BOTTOM:
                 ctx.fillRect(
                     step[1] * (settings.border + settings.lane) + settings.border,
                     step[0] * (settings.border + settings.lane) + settings.border,
                     settings.lane,
                     settings.lane * 2 + settings.border
-            );
+                );
                 break;
             case CELL.RIGHT:
                 ctx.fillRect(
